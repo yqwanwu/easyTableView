@@ -1,0 +1,5 @@
+# easyTableView
+具体用法 --》demo，  简单继承了tableView，重写delegate和datasource的get/set方法。
+强行把代理和数据源设置为customTableView自身。保留并保留传入的数据源，在当前代理执行对应方法的时候先去判断是否需要执行原方法，
+cellAction用来指定点击事件，以前遇到一个很坑的情况，搞需求的人，不断的更新几个cell之间的位置，而原来的代码是根据section和row来判断对应的事件。
+每次改动都很烦，现在这么用cellAction包装事件，可以方便的屏蔽这个问题，因为事件跟模型绑定和位置无关
