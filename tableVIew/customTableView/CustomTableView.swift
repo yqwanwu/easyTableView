@@ -8,9 +8,6 @@
 
 import UIKit
 
-/**
- *  T 数据源类型
- */
 class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     ///必须卸载这防止提前被释放
     fileprivate weak var originalDataSouce: UITableViewDataSource?
@@ -41,34 +38,34 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     }
     
     override var dataSource: UITableViewDataSource? {
-        didSet {
-            originalDataSouce = dataSource
-            super.dataSource = self
-        }
-//        set {
+//        didSet {
+//            originalDataSouce = dataSource
 //            super.dataSource = self
-//            originalDataSouce = newValue
 //        }
-//        
-//        get {
-//            return originalDataSouce
-//        }
+        set {
+            super.dataSource = self
+            originalDataSouce = newValue
+        }
+        
+        get {
+            return super.dataSource
+        }
     }
     
     override var delegate: UITableViewDelegate? {
         
-        didSet {
-            originalDelegate = delegate
-            super.delegate = self
-        }
-//        set {
+//        didSet {
+//            originalDelegate = delegate
 //            super.delegate = self
-//            originalDelegate = newValue
 //        }
-//        
-//        get {
-//            return originalDelegate
-//        }
+        set {
+            super.delegate = self
+            originalDelegate = newValue
+        }
+        
+        get {
+            return super.delegate
+        }
     }
     
     override init(frame: CGRect, style: UITableViewStyle) {
