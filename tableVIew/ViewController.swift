@@ -53,6 +53,10 @@ class ViewController: UIViewController, UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         print("aaaaaaa")
     }
+    
+    deinit {
+        print("vc 销毁")
+    }
 
 }
 
