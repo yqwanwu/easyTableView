@@ -12,6 +12,8 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     ///必须卸载这防止提前被释放
     fileprivate weak var originalDataSouce: UITableViewDataSource?
     fileprivate weak var originalDelegate: UITableViewDelegate?
+    private var dataSouceProxy: _CustomTableViewDataSource!
+    private var delegateProxy: _CustomTableViewDelegate!
     
     var dataArray: [[CustomTableViewCellItem]] = [[CustomTableViewCellItem]]() {
         willSet {
@@ -43,7 +45,12 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
 //            super.dataSource = self
 //        }
         set {
-            super.dataSource = self
+            if newValue != nil {
+                dataSouceProxy = _CustomTableViewDataSource(delegate: newValue, commonDelegate: self)
+                dataSouceProxy.obj = self
+            }
+            
+            super.dataSource = dataSouceProxy
             originalDataSouce = newValue
         }
         
@@ -59,7 +66,10 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
 //            super.delegate = self
 //        }
         set {
-            super.delegate = self
+            if newValue != nil {
+                delegateProxy = _CustomTableViewDelegate(delegate: newValue, commonDelegate: self)
+            }
+            super.delegate = delegateProxy
             originalDelegate = newValue
         }
         
@@ -84,6 +94,22 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
         self.tableFooterView = UIView()
         self.sectionHeaderHeight = 0.1
         self.sectionFooterHeight = 0.1
+    }
+    
+    private class _CustomTableViewDataSource: CommonProxy, UITableViewDataSource {
+        weak var obj: CustomTableView!
+        
+        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+            return obj.tableView(tableView, numberOfRowsInSection: section)
+        }
+        
+        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+            return obj.tableView(tableView, cellForRowAt: indexPath)
+        }
+    }
+    
+    private class _CustomTableViewDelegate: CommonProxy, UITableViewDelegate {
+     
     }
 }
 

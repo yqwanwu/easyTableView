@@ -42,11 +42,16 @@ class ViewController: UIViewController, UITableViewDelegate {
         tableView.estimatedRowHeight = 100
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.sectionHeaderHeight = 50
+        
 //        tableView.delegate = self
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 150
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        print("aaaaaaa")
     }
 
 }

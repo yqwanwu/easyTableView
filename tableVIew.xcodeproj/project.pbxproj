@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9615DDEA1E8CF559002C3FB3 /* CommonProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9615DDE91E8CF559002C3FB3 /* CommonProxy.swift */; };
 		96C5A7931E496FC100A13CD3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C5A7921E496FC100A13CD3 /* AppDelegate.swift */; };
 		96C5A7951E496FC100A13CD3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C5A7941E496FC100A13CD3 /* ViewController.swift */; };
 		96C5A7981E496FC100A13CD3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96C5A7961E496FC100A13CD3 /* Main.storyboard */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9615DDE91E8CF559002C3FB3 /* CommonProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonProxy.swift; sourceTree = "<group>"; };
 		96C5A78F1E496FC100A13CD3 /* tableVIew.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tableVIew.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96C5A7921E496FC100A13CD3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		96C5A7941E496FC100A13CD3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -84,6 +86,7 @@
 		96C5A7A41E49943E00A13CD3 /* customTableView */ = {
 			isa = PBXGroup;
 			children = (
+				9615DDE91E8CF559002C3FB3 /* CommonProxy.swift */,
 				96C5A7A81E49945700A13CD3 /* CustomTableView.swift */,
 				96C5A7B71E4994FE00A13CD3 /* BadgeView.swift */,
 			);
@@ -179,6 +182,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				96C5A7BA1E49979500A13CD3 /* StoryboardCell.swift in Sources */,
+				9615DDEA1E8CF559002C3FB3 /* CommonProxy.swift in Sources */,
 				96C5A7BC1E4998A400A13CD3 /* TestCellModel.swift in Sources */,
 				96C5A7C31E49A20500A13CD3 /* NextViewController.swift in Sources */,
 				96C5A7951E496FC100A13CD3 /* ViewController.swift in Sources */,
