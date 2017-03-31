@@ -51,7 +51,7 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
             }
             
             super.dataSource = dataSouceProxy
-            originalDataSouce = newValue
+            originalDataSouce = self.isEqual(newValue) ? nil : newValue
         }
         
         get {
@@ -70,7 +70,7 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
                 delegateProxy = _CustomTableViewDelegate(delegate: newValue, commonDelegate: self)
             }
             super.delegate = delegateProxy
-            originalDelegate = newValue
+            originalDelegate = self.isEqual(newValue) ? nil : newValue
         }
         
         get {
