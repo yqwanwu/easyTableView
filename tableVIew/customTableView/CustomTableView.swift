@@ -12,8 +12,8 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     ///必须卸载这防止提前被释放
     fileprivate weak var originalDataSouce: UITableViewDataSource?
     fileprivate weak var originalDelegate: UITableViewDelegate?
-    private var dataSouceProxy: _CustomTableViewDataSource!
-    private var delegateProxy: _CustomTableViewDelegate!
+    private var dataSouceProxy: _CustomTableViewDataSource?
+    private var delegateProxy: _CustomTableViewDelegate?
     
     var dataArray: [[CustomTableViewCellItem]] = [[CustomTableViewCellItem]]() {
         willSet {
@@ -47,11 +47,11 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
         set {
             if newValue != nil {
                 dataSouceProxy = _CustomTableViewDataSource(delegate: newValue, commonDelegate: self)
-                dataSouceProxy.obj = self
+                dataSouceProxy?.obj = self
             }
             
             super.dataSource = dataSouceProxy
-            originalDataSouce = newValue
+            originalDataSouce = self.isEqual(newValue) ? nil : newValue
         }
         
         get {
@@ -70,7 +70,7 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
                 delegateProxy = _CustomTableViewDelegate(delegate: newValue, commonDelegate: self)
             }
             super.delegate = delegateProxy
-            originalDelegate = newValue
+            originalDelegate = self.isEqual(newValue) ? nil : newValue
         }
         
         get {
@@ -94,6 +94,10 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
         self.tableFooterView = UIView()
         self.sectionHeaderHeight = 0.1
         self.sectionFooterHeight = 0.1
+    }
+    
+    deinit {
+        print("tableView销毁")
     }
     
     private class _CustomTableViewDataSource: CommonProxy, UITableViewDataSource {
@@ -285,7 +289,7 @@ class CustomTableViewCell: UITableViewCell {
     weak var viewController: UIViewController?
     
     var model: CustomTableViewCellItem?
-    var tableView: UITableView?
+    weak var tableView: UITableView?
     var indexPath: NSIndexPath?
     
     static let placeholderCell = CustomTableViewCell()
