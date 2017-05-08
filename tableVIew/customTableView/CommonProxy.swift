@@ -19,7 +19,8 @@ class CommonProxy: NSObject {
     
     //路由 把其他类的代理设为自己，自己不实现具体方法
     override func forwardingTarget(for aSelector: Selector!) -> Any? {
-        if shouldInvokeCommonMethod, commonDelegate?.responds(to: aSelector) == true {                return commonDelegate
+        if shouldInvokeCommonMethod, commonDelegate?.responds(to: aSelector) == true {
+            return commonDelegate
         }
         
         if delegate?.responds(to: aSelector) == true {

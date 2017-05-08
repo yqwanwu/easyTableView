@@ -21,11 +21,12 @@ class ViewController: UIViewController, UITableViewDelegate {
         
         //MARK: 创建数据源
         //如果是 storybord 中的cell 必须指定 cell 的 identifier 为 cellClss的同名 如： StoryboardCell
-        let sbModel = TestCellModel()
+        let sbModel = TestCellModel(builder: TestCellModel.Builder()
+            .build(cellClass: StoryboardCell.self)
+            .build(isFromStoryBord: true)
+            .build(heightForRow: 150))
+        
         sbModel.titleText = "storyboard !!!"
-        sbModel.cellClass = StoryboardCell.self
-        sbModel.isFromStoryBord = true
-        sbModel.heightForRow = 150
         sbModel.cellAction = { indexPath in
             print(indexPath.row)
         }
