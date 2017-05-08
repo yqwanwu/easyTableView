@@ -19,7 +19,7 @@ class NextViewController: UIViewController, UITableViewDelegate, UITableViewData
         //如果设置代理为自己 需要自己设定 rowHeight
         tableView.delegate = self
 
-        let xibModel = CustomTableViewCellItem.Builder().build(text: "xib....").build(cellClass: XibCell.self).build(heightForRow: 100).build()
+        let xibModel = CustomTableViewCellItem().build(text: "xib....").build(cellClass: XibCell.self).build(heightForRow: 100)
         xibModel.cellAction = { (idx) in
             print(idx.row)
         }

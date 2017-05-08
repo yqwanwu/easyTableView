@@ -225,62 +225,43 @@ class CustomTableViewCellItem: NSObject {
         self.cellAction = cellAction
     }
     
-    
     override init() {
         super.init()
     }
     
-    init(builder: Builder) {
-        super.init()
-        self.imageUrl = builder.imageUrl
-        self.text = builder.text
-        self.detailText = builder.detailText
-        self.accessoryType = builder.accessoryType
-        self.cellClass = builder.cellClass ?? CustomTableViewCellItem.self
-        self.heightForRow = builder.heightForRow
-        self.isFromStoryBord = builder.isFromStoryBord
+    func build(isFromStoryBord _isFromStoryBord: Bool) -> Self {
+        self.isFromStoryBord = _isFromStoryBord
+        return self
     }
     
-    class Builder: CustomTableViewCellItem {
-        
-        func build(isFromStoryBord _isFromStoryBord: Bool) -> Builder {
-            self.isFromStoryBord = _isFromStoryBord
-            return self
-        }
-        
-        func build(imageUrl _imageUrl: String?) -> Builder {
-            self.imageUrl = _imageUrl
-            return self
-        }
-        
-        func build(text _text: String?) -> Builder {
-            self.text = _text
-            return self
-        }
-        
-        func build(detailText _detailText: String?) -> Builder {
-            self.detailText = _detailText
-            return self
-        }
-        
-        func build(accessoryType _accessoryType: UITableViewCellAccessoryType) -> Builder {
-            self.accessoryType = _accessoryType
-            return self
-        }
-        
-        func build(cellClass _cellClass: AnyClass) -> Builder {
-            self.cellClass = _cellClass
-            return self
-        }
-        
-        func build(heightForRow height: CGFloat) -> Builder {
-            self.heightForRow = height
-            return self
-        }
-        
-        func build() -> CustomTableViewCellItem {
-            return CustomTableViewCellItem(builder: self)
-        }
+    func build(imageUrl _imageUrl: String?) -> Self {
+        self.imageUrl = _imageUrl
+        return self
+    }
+    
+    func build(text _text: String?) -> Self {
+        self.text = _text
+        return self
+    }
+    
+    func build(detailText _detailText: String?) -> Self {
+        self.detailText = _detailText
+        return self
+    }
+    
+    func build(accessoryType _accessoryType: UITableViewCellAccessoryType) -> Self {
+        self.accessoryType = _accessoryType
+        return self
+    }
+    
+    func build(cellClass _cellClass: AnyClass) -> Self {
+        self.cellClass = _cellClass
+        return self
+    }
+    
+    func build(heightForRow height: CGFloat) -> Self {
+        self.heightForRow = height
+        return self
     }
 }
 
