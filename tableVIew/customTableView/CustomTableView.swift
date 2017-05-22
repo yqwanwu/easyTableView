@@ -40,10 +40,10 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     }
     
     override var dataSource: UITableViewDataSource? {
-//        didSet {
-//            originalDataSouce = dataSource
-//            super.dataSource = self
-//        }
+        //        didSet {
+        //            originalDataSouce = dataSource
+        //            super.dataSource = self
+        //        }
         set {
             if newValue != nil {
                 dataSouceProxy = _CustomTableViewDataSource(delegate: newValue, commonDelegate: self)
@@ -61,10 +61,10 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     
     override var delegate: UITableViewDelegate? {
         
-//        didSet {
-//            originalDelegate = delegate
-//            super.delegate = self
-//        }
+        //        didSet {
+        //            originalDelegate = delegate
+        //            super.delegate = self
+        //        }
         set {
             if newValue != nil {
                 delegateProxy = _CustomTableViewDelegate(delegate: newValue, commonDelegate: self)
@@ -97,7 +97,7 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     }
     
     deinit {
-        print("tableView销毁")
+        debugPrint("tableView销毁")
     }
     
     private class _CustomTableViewDataSource: CommonProxy, UITableViewDataSource {
@@ -113,7 +113,7 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     }
     
     private class _CustomTableViewDelegate: CommonProxy, UITableViewDelegate {
-     
+        
     }
 }
 
@@ -129,7 +129,7 @@ extension CustomTableView {
         
         return dataArray[section].count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let od = originalDataSouce, !od.isEqual(self) {
             let cell = od.tableView(tableView, cellForRowAt: indexPath)
@@ -172,6 +172,10 @@ extension CustomTableView {
             }
         }
         
+        if dataArray.isEmpty {
+            return 44.0
+        }
+        
         let model: CustomTableViewCellItem = dataArray[indexPath.section][indexPath.row]
         return model.heightForRow
     }
@@ -189,7 +193,7 @@ extension CustomTableView {
         if let od = originalDelegate, !od.isEqual(self), let h = od.tableView?(tableView, heightForHeaderInSection: section) {
             return h
         }
-
+        
         return max(tableView.sectionHeaderHeight, 0.1)
     }
     
@@ -198,6 +202,10 @@ extension CustomTableView {
             if let _ = od.tableView?(tableView, didSelectRowAt: indexPath) {
                 return
             }
+        }
+        
+        if dataArray.isEmpty {
+            return
         }
         
         let model: CustomTableViewCellItem = dataArray[indexPath.section][indexPath.row]
@@ -267,7 +275,7 @@ class CustomTableViewCellItem: NSObject {
 
 class CustomTableViewCell: UITableViewCell {
     var badgeView: BadgeView = BadgeView.create()
-    weak var viewController: UIViewController?
+    weak var vc: UIViewController?
     
     var model: CustomTableViewCellItem?
     weak var tableView: UITableView?
@@ -306,7 +314,6 @@ class CustomTableViewCell: UITableViewCell {
         super.layoutSubviews()
         
         badgeView.center = CGPoint(x: contentView.frame.width - badgeView.frame.width - 30, y: contentView.frame.height / 2)
-        badgeView.backgroundColor = UIColor.red
         
         if !addedBadgeValue {
             addedBadgeValue = true
