@@ -91,7 +91,9 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     func setup() {
         self.dataSource = self
         self.delegate = self
-        self.tableFooterView = UIView()
+        if self.tableFooterView == nil {
+            self.tableFooterView = UIView()
+        }
         self.sectionHeaderHeight = 0.1
         self.sectionFooterHeight = 0.1
     }
