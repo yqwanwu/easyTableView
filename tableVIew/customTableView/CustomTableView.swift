@@ -94,6 +94,7 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
         if self.tableFooterView == nil {
             self.tableFooterView = UIView()
         }
+        
         self.sectionHeaderHeight = 0.1
         self.sectionFooterHeight = 0.1
     }
@@ -145,15 +146,15 @@ extension CustomTableView {
         
         let data = dataArray[indexPath.section][indexPath.row]
         let identifier = (NSStringFromClass(data.cellClass) as NSString).pathExtension
-        if let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as? CustomTableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
+        if let cell = cell as? CustomTableViewCell {
             cell.tableView = tableView
             cell.indexPath = indexPath as NSIndexPath
             cell.model = data
             cell.accessoryType = data.accessoryType
-            return cell
         }
         
-        return CustomTableViewCell.placeholderCell
+        return cell
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -231,12 +232,19 @@ class CustomTableViewCellItem: NSObject {
     ///默认是从xib加载，storybord中设计的cell，就只需要注册class，不用注册nib。
     var isFromStoryBord = false
     
+    var customValue: [String:Any]?
+    
     func setupCellAction(_ cellAction: @escaping cellSelectedAction) {
         self.cellAction = cellAction
     }
     
     override init() {
         super.init()
+    }
+    
+    func build(customValue _customValue: [String:Any]) -> Self {
+        self.customValue = _customValue
+        return self
     }
     
     func build(isFromStoryBord _isFromStoryBord: Bool) -> Self {
