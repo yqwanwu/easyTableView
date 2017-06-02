@@ -242,41 +242,49 @@ class CustomTableViewCellItem: NSObject {
         super.init()
     }
     
+    @discardableResult
     func build(customValue _customValue: [String:Any]) -> Self {
         self.customValue = _customValue
         return self
     }
     
+    @discardableResult
     func build(isFromStoryBord _isFromStoryBord: Bool) -> Self {
         self.isFromStoryBord = _isFromStoryBord
         return self
     }
     
+    @discardableResult
     func build(imageUrl _imageUrl: String?) -> Self {
         self.imageUrl = _imageUrl
         return self
     }
     
+    @discardableResult
     func build(text _text: String?) -> Self {
         self.text = _text
         return self
     }
     
+    @discardableResult
     func build(detailText _detailText: String?) -> Self {
         self.detailText = _detailText
         return self
     }
     
+    @discardableResult
     func build(accessoryType _accessoryType: UITableViewCellAccessoryType) -> Self {
         self.accessoryType = _accessoryType
         return self
     }
     
+    @discardableResult
     func build(cellClass _cellClass: AnyClass) -> Self {
         self.cellClass = _cellClass
         return self
     }
     
+    @discardableResult
     func build(heightForRow height: CGFloat) -> Self {
         self.heightForRow = height
         return self
