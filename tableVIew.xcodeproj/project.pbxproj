@@ -14,7 +14,6 @@
 		96C5A79A1E496FC100A13CD3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96C5A7991E496FC100A13CD3 /* Assets.xcassets */; };
 		96C5A79D1E496FC100A13CD3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96C5A79B1E496FC100A13CD3 /* LaunchScreen.storyboard */; };
 		96C5A7B21E49945700A13CD3 /* CustomTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C5A7A81E49945700A13CD3 /* CustomTableView.swift */; };
-		96C5A7B81E4994FE00A13CD3 /* BadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C5A7B71E4994FE00A13CD3 /* BadgeView.swift */; };
 		96C5A7BA1E49979500A13CD3 /* StoryboardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C5A7B91E49979500A13CD3 /* StoryboardCell.swift */; };
 		96C5A7BC1E4998A400A13CD3 /* TestCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C5A7BB1E4998A400A13CD3 /* TestCellModel.swift */; };
 		96C5A7BF1E49992F00A13CD3 /* XibCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C5A7BD1E49992F00A13CD3 /* XibCell.swift */; };
@@ -33,7 +32,6 @@
 		96C5A79E1E496FC100A13CD3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		96C5A7A51E49945600A13CD3 /* tableVIew-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "tableVIew-Bridging-Header.h"; path = "customTableView/tableVIew-Bridging-Header.h"; sourceTree = "<group>"; };
 		96C5A7A81E49945700A13CD3 /* CustomTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTableView.swift; sourceTree = "<group>"; };
-		96C5A7B71E4994FE00A13CD3 /* BadgeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BadgeView.swift; sourceTree = "<group>"; };
 		96C5A7B91E49979500A13CD3 /* StoryboardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryboardCell.swift; sourceTree = "<group>"; };
 		96C5A7BB1E4998A400A13CD3 /* TestCellModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestCellModel.swift; sourceTree = "<group>"; };
 		96C5A7BD1E49992F00A13CD3 /* XibCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XibCell.swift; sourceTree = "<group>"; };
@@ -88,7 +86,6 @@
 			children = (
 				9615DDE91E8CF559002C3FB3 /* CommonProxy.swift */,
 				96C5A7A81E49945700A13CD3 /* CustomTableView.swift */,
-				96C5A7B71E4994FE00A13CD3 /* BadgeView.swift */,
 			);
 			path = customTableView;
 			sourceTree = "<group>";
@@ -187,7 +184,6 @@
 				96C5A7C31E49A20500A13CD3 /* NextViewController.swift in Sources */,
 				96C5A7951E496FC100A13CD3 /* ViewController.swift in Sources */,
 				96C5A7B21E49945700A13CD3 /* CustomTableView.swift in Sources */,
-				96C5A7B81E4994FE00A13CD3 /* BadgeView.swift in Sources */,
 				96C5A7931E496FC100A13CD3 /* AppDelegate.swift in Sources */,
 				96C5A7BF1E49992F00A13CD3 /* XibCell.swift in Sources */,
 			);
@@ -320,7 +316,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "tableVIew/customTableView/tableVIew-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -335,7 +331,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.test.test.tableVIew;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "tableVIew/customTableView/tableVIew-Bridging-Header.h";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};

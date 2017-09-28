@@ -43,7 +43,7 @@ class ViewController: UIViewController, UITableViewDelegate {
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.sectionHeaderHeight = 50
         
-//        tableView.delegate = self
+        tableView.delegate = self
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

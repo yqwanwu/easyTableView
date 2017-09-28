@@ -14,6 +14,7 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     fileprivate weak var originalDelegate: UITableViewDelegate?
     private var dataSouceProxy: _CustomTableViewDataSource?
     private var delegateProxy: _CustomTableViewDelegate?
+    private var destroyed = false
     
     var dataArray: [[CustomTableViewCellItem]] = [[CustomTableViewCellItem]]() {
         willSet {
@@ -40,41 +41,25 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     }
     
     override var dataSource: UITableViewDataSource? {
-        //        didSet {
-        //            originalDataSouce = dataSource
-        //            super.dataSource = self
-        //        }
-        set {
-            if newValue != nil {
-                dataSouceProxy = _CustomTableViewDataSource(delegate: newValue, commonDelegate: self)
-                dataSouceProxy?.obj = self
+        didSet {
+            if destroyed {
+                return
             }
-            
+            originalDataSouce = dataSource
+            dataSouceProxy = dataSource == nil ? nil : _CustomTableViewDataSource(delegate: dataSource, commonDelegate: self)
+            dataSouceProxy?.obj = self
             super.dataSource = dataSouceProxy
-            originalDataSouce = self.isEqual(newValue) ? nil : newValue
-        }
-        
-        get {
-            return super.dataSource
         }
     }
     
     override var delegate: UITableViewDelegate? {
-        
-        //        didSet {
-        //            originalDelegate = delegate
-        //            super.delegate = self
-        //        }
-        set {
-            if newValue != nil {
-                delegateProxy = _CustomTableViewDelegate(delegate: newValue, commonDelegate: self)
+        didSet {
+            if destroyed {
+                return
             }
+            originalDelegate = delegate
+            delegateProxy = delegate == nil ? nil : _CustomTableViewDelegate(delegate: delegate, commonDelegate: self)
             super.delegate = delegateProxy
-            originalDelegate = self.isEqual(newValue) ? nil : newValue
-        }
-        
-        get {
-            return super.delegate
         }
     }
     
@@ -100,6 +85,7 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     }
     
     deinit {
+        destroyed = true
         debugPrint("tableView销毁")
     }
     
@@ -292,7 +278,6 @@ class CustomTableViewCellItem: NSObject {
 }
 
 class CustomTableViewCell: UITableViewCell {
-    var badgeView: BadgeView = BadgeView.create()
     weak var vc: UIViewController?
     
     var model: CustomTableViewCellItem?
@@ -301,41 +286,13 @@ class CustomTableViewCell: UITableViewCell {
     
     static let placeholderCell = CustomTableViewCell()
     
-    var badgeValue: String? {
-        didSet {
-            badgeView.badgeValue = badgeValue
-            badgeView.center = CGPoint(x: contentView.frame.width - badgeView.frame.width - 40, y: contentView.frame.height / 2)
-        }
-    }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        setup()
     }
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setup()
-    }
-    
-    private func setup() {
-        badgeView.textColor = UIColor.white
-        badgeView.layer.masksToBounds = true
-        badgeView.font = UIFont.systemFont(ofSize: 12)
-        badgeView.textAlignment = .center
-        self.selectionStyle = .none
-    }
-    
-    private var addedBadgeValue = false
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        badgeView.center = CGPoint(x: contentView.frame.width - badgeView.frame.width - 30, y: contentView.frame.height / 2)
-        
-        if !addedBadgeValue {
-            addedBadgeValue = true
-            contentView.addSubview(badgeView)
-        }
     }
 }
+
