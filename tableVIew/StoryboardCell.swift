@@ -12,7 +12,7 @@ class StoryboardCell: CustomTableViewCell {
     
     @IBOutlet weak var titleLabel: UILabel!
     
-    override var model: CustomTableViewCellItem? {
+    override var model: Any? {
         didSet {
             if let model = model as? TestCellModel {
                 self.titleLabel.text = model.titleText

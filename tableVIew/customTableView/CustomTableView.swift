@@ -9,11 +9,12 @@
 import UIKit
 
 class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
-    ///必须卸载这防止提前被释放
+    ///这防止提前被释放
     fileprivate weak var originalDataSouce: UITableViewDataSource?
     fileprivate weak var originalDelegate: UITableViewDelegate?
     private var dataSouceProxy: _CustomTableViewDataSource?
     private var delegateProxy: _CustomTableViewDelegate?
+    //防止已经销毁还在使用weak属性
     private var destroyed = false
     
     var dataArray: [[CustomTableViewCellItem]] = [[CustomTableViewCellItem]]() {
@@ -23,18 +24,19 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
             var set: Set = Set<String>()
             for outData in newValue {
                 for data in outData {
-                    if data.isFromStoryBord { continue }
                     set.insert(NSStringFromClass(data.cellClass))
                 }
             }
             
             for s in set {
                 identifier = (s as NSString).pathExtension
-                self.register(NSClassFromString(s), forCellReuseIdentifier: identifier)
-                
-                if Bundle.main.path(forResource: identifier, ofType: "nib") != nil {
-                    let nib = UINib(nibName: identifier, bundle: Bundle.main)
-                    self.register(nib, forCellReuseIdentifier: identifier)
+                if self.dequeueReusableCell(withIdentifier: identifier) == nil {
+                    if Bundle.main.path(forResource: identifier, ofType: "nib") != nil {
+                        let nib = UINib(nibName: identifier, bundle: Bundle.main)
+                        self.register(nib, forCellReuseIdentifier: identifier)
+                    } else {
+                        self.register(NSClassFromString(s), forCellReuseIdentifier: identifier)
+                    }
                 }
             }
         }
@@ -84,11 +86,42 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
         self.sectionFooterHeight = 0.1
     }
     
+    func getOriginalModle<T>(indexPath: IndexPath, type: T.Type) -> T? {
+        if indexPath.section < dataArray.count && indexPath.row < dataArray[indexPath.section].count {
+            if let model = dataArray[indexPath.section][indexPath.row].originalModel as? T {
+                return model
+            }
+        }
+        return nil
+    }
+    
+    func getAdapterModle(indexPath: IndexPath) -> CustomTableViewCellItem? {
+        if indexPath.section < dataArray.count && indexPath.row < dataArray[indexPath.section].count {
+            return dataArray[indexPath.section][indexPath.row]
+        }
+        return nil
+    }
+    
+    ///创建一个默认的cell，
+    func createDefaultCell(indexPath: IndexPath) -> UITableViewCell {
+        let data = dataArray[indexPath.section][indexPath.row]
+        let identifier = (NSStringFromClass(data.cellClass) as NSString).pathExtension
+        let cell = self.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
+        if let cell = cell as? CustomTableViewCell {
+            cell.model = data.originalModel
+            cell.adapterModel = data
+            cell.accessoryType = data.accessoryType
+        }
+        
+        return cell
+    }
+    
     deinit {
         destroyed = true
         debugPrint("tableView销毁")
     }
     
+    //代理类
     private class _CustomTableViewDataSource: CommonProxy, UITableViewDataSource {
         weak var obj: CustomTableView!
         
@@ -123,24 +156,10 @@ extension CustomTableView {
         if let od = originalDataSouce, !od.isEqual(self) {
             let cell = od.tableView(tableView, cellForRowAt: indexPath)
             if cell != CustomTableViewCell.placeholderCell {
-                if let cc = cell as? CustomTableViewCell {
-                    cc.tableView = tableView
-                }
                 return cell
             }
         }
-        
-        let data = dataArray[indexPath.section][indexPath.row]
-        let identifier = (NSStringFromClass(data.cellClass) as NSString).pathExtension
-        let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
-        if let cell = cell as? CustomTableViewCell {
-            cell.tableView = tableView
-            cell.indexPath = indexPath as NSIndexPath
-            cell.model = data
-            cell.accessoryType = data.accessoryType
-        }
-        
-        return cell
+        return createDefaultCell(indexPath: indexPath)
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -204,10 +223,14 @@ extension CustomTableView {
 
 
 
-
+///数据源
 class CustomTableViewCellItem: NSObject {
     typealias cellSelectedAction = (_ idx: IndexPath) -> Void
     
+    //原始数据，对应cell的model， CustomTableViewCellItem 对应cell 的 adapterModel
+    var originalModel: Any?
+    
+    //一些方便后面使用的属性
     var imageUrl: String?
     var text: String?
     var detailText: String?
@@ -215,10 +238,8 @@ class CustomTableViewCellItem: NSObject {
     var heightForRow: CGFloat = UITableViewAutomaticDimension
     var accessoryType: UITableViewCellAccessoryType = .none
     var cellAction: cellSelectedAction = {_ in }
-    ///默认是从xib加载，storybord中设计的cell，就只需要注册class，不用注册nib。
-    var isFromStoryBord = false
     
-    var customValue: [String:Any]?
+    var customValue: [String: Any]?
     
     func setupCellAction(_ cellAction: @escaping cellSelectedAction) {
         self.cellAction = cellAction
@@ -229,14 +250,14 @@ class CustomTableViewCellItem: NSObject {
     }
     
     @discardableResult
-    func build(customValue _customValue: [String:Any]) -> Self {
-        self.customValue = _customValue
+    func build(originalModel _originalModel: Any) -> Self {
+        self.originalModel = _originalModel
         return self
     }
     
     @discardableResult
-    func build(isFromStoryBord _isFromStoryBord: Bool) -> Self {
-        self.isFromStoryBord = _isFromStoryBord
+    func build(customValue _customValue: [String: Any]) -> Self {
+        self.customValue = _customValue
         return self
     }
     
@@ -277,15 +298,14 @@ class CustomTableViewCellItem: NSObject {
     }
 }
 
+///通用cell的基类
 class CustomTableViewCell: UITableViewCell {
     weak var vc: UIViewController?
+    var model: Any?
+    var adapterModel: CustomTableViewCellItem?
     
-    var model: CustomTableViewCellItem?
-    weak var tableView: UITableView?
-    var indexPath: NSIndexPath?
-    
+    ///如果直接返回 placeholderCell  自动创建cell
     static let placeholderCell = CustomTableViewCell()
-    
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)

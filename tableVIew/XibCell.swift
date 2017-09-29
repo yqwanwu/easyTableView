@@ -12,9 +12,17 @@ class XibCell: CustomTableViewCell {
     
     @IBOutlet weak var titleLabel: UILabel!
     
-    override var model: CustomTableViewCellItem? {
+//    override var model: Any? {
+//        didSet {
+//            if let model = model {
+//                
+//            }
+//        }
+//    }
+    
+    override var adapterModel: CustomTableViewCellItem? {
         didSet {
-            if let model = model {
+            if let model = adapterModel {
                 self.titleLabel.text = model.text
             }
         }
