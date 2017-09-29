@@ -20,49 +20,7 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     //占位 如果返回这个cell。tableview自动处理cell
     static let PLACEHODEL_CELL = UITableViewCell()
     
-    var dataArray: [[CustomTableViewCellItem]] = [[CustomTableViewCellItem]]() {
-        willSet {
-            var identifier = ""
-            
-            var set: Set = Set<String>()
-            var customIdentifierDic = [String: CustomTableViewCellItem]()
-            for outData in newValue {
-                for data in outData {
-                    if let id = data.cellIdentify {
-                        customIdentifierDic[id] = data
-                        if self.dequeueReusableCell(withIdentifier: id) == nil {
-                            self.register(NSClassFromString(id), forCellReuseIdentifier: identifier)
-                        }
-                    } else {
-                        set.insert(NSStringFromClass(data.cellClass))
-                    }
-                }
-            }
-            
-            for s in set {
-                identifier = (s as NSString).pathExtension
-                if self.dequeueReusableCell(withIdentifier: identifier) == nil {
-                    if Bundle.main.path(forResource: identifier, ofType: "nib") != nil {
-                        let nib = UINib(nibName: identifier, bundle: Bundle.main)
-                        self.register(nib, forCellReuseIdentifier: identifier)
-                    } else {
-                        self.register(NSClassFromString(s), forCellReuseIdentifier: identifier)
-                    }
-                }
-            }
-            
-            for (k, v) in customIdentifierDic {
-                if self.dequeueReusableCell(withIdentifier: k) == nil {
-                    if Bundle.main.path(forResource: k, ofType: "nib") != nil {
-                        let nib = UINib(nibName: k, bundle: Bundle.main)
-                        self.register(nib, forCellReuseIdentifier: k)
-                    } else {
-                        self.register(v.cellClass, forCellReuseIdentifier: k)
-                    }
-                }
-            }
-        }
-    }
+    var dataArray: [[CustomTableViewCellItem]] = [[CustomTableViewCellItem]]()
     
     override var dataSource: UITableViewDataSource? {
         didSet {
@@ -111,6 +69,18 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
         self.rowHeight = UITableViewAutomaticDimension
     }
     
+    func register(clazz: AnyClass) {
+        let identifier = (NSStringFromClass(clazz) as NSString).pathExtension
+        if self.dequeueReusableCell(withIdentifier: identifier) == nil {
+            if Bundle.main.path(forResource: identifier, ofType: "nib") != nil {
+                let nib = UINib(nibName: identifier, bundle: Bundle.main)
+                self.register(nib, forCellReuseIdentifier: identifier)
+            } else {
+                self.register(clazz, forCellReuseIdentifier: identifier)
+            }
+        }
+    }
+    
     ///获取 原始数据模型
     /// - Parameter type: 数据类型，如 Int.self
     func getOriginalModle<T>(indexPath: IndexPath, type: T.Type) -> T? {
@@ -134,13 +104,13 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     func createDefaultCell(indexPath: IndexPath) -> UITableViewCell {
         let data = dataArray[indexPath.section][indexPath.row]
         let identifier = data.cellIdentify ?? (NSStringFromClass(data.cellClass) as NSString).pathExtension
+        
         let cell = self.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
         if let cell = cell as? CustomTableViewCellProtocol {
             cell.bindAdapterModel(model: data)
             cell.bindOriginalModel(model: data.originalModel)
         }
         cell.accessoryType = data.accessoryType
-        
         return cell
     }
     
@@ -152,12 +122,30 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     //代理类
     private class _CustomTableViewDataSource: CommonProxy, UITableViewDataSource {
         weak var obj: CustomTableView!
+        fileprivate var registeredCells = [String: AnyClass]()
         
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             return obj.tableView(tableView, numberOfRowsInSection: section)
         }
         
         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+            let data = obj.dataArray[indexPath.section][indexPath.row]
+            let identifier = data.cellIdentify ?? (NSStringFromClass(data.cellClass) as NSString).pathExtension
+            
+            if obj.dequeueReusableCell(withIdentifier: identifier) == nil && registeredCells[identifier] == nil {
+                if let id = data.cellIdentify {
+                    if Bundle.main.path(forResource: id, ofType: "nib") != nil {
+                        let nib = UINib(nibName: id, bundle: Bundle.main)
+                        obj.register(nib, forCellReuseIdentifier: id)
+                    } else {
+                        obj.register(data.cellClass, forCellReuseIdentifier: id)
+                    }
+                    registeredCells[id] = data.cellClass
+                } else {
+                    obj.register(clazz: data.cellClass)
+                    registeredCells[identifier] = data.cellClass
+                }
+            }
             return obj.tableView(tableView, cellForRowAt: indexPath)
         }
     }
@@ -250,6 +238,10 @@ extension CustomTableView {
 }
 
 
+///section 数据
+class CustomTableViewSectionItem: NSObject {
+    var cellItems = [CustomTableViewCellItem]()
+}
 
 ///数据源
 class CustomTableViewCellItem: NSObject {

@@ -36,7 +36,8 @@ class ViewController: UIViewController, UITableViewDelegate {
         let thirdModel = CustomTableViewCellItem().build(cellClass: UITableViewCell.self).build(cellIdentify: "cell").build(heightForRow: 100)
         
         //MARK: 添加数据
-        tableView.dataArray = [[cellItem, xibModel], [cellItem, xibModel, cellItem], [thirdModel]]
+        tableView.dataArray = [[cellItem], [thirdModel]]
+        tableView.dataArray.append([cellItem, xibModel, cellItem])
         
         //MARK: 配置tableVIew
         tableView.sectionHeaderHeight = 50
