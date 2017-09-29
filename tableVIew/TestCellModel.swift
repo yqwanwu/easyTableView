@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TestCellModel: CustomTableViewCellItem {
+class TestCellModel: NSObject {
     
     var titleText = ""
     

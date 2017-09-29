@@ -41,8 +41,11 @@ extension NextViewController {
         /*若返回 CustomTableViewCell.placeholderCell(), 自动生成 cell*/
 //        return CustomTableViewCell.placeholderCell()
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "XibCell", for: indexPath) as! XibCell
-        cell.model = self.tableView.dataArray[indexPath.section][indexPath.row]
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "XibCell", for: indexPath) as! XibCell
+//        cell.bindAdapterModel(model: self.tableView.dataArray[indexPath.section][indexPath.row])
+        
+        let cell = self.tableView.createDefaultCell(indexPath: indexPath)//上面两句可以被这一句替换
+        
         cell.contentView.backgroundColor = UIColor(red: CGFloat(arc4random() % 100) / CGFloat(100.0), green: CGFloat(arc4random() % 100) / CGFloat(100.0), blue: CGFloat(arc4random() % 100) / CGFloat(100.0), alpha: 1)
         return cell
     }

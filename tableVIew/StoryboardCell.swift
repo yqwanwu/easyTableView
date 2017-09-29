@@ -8,15 +8,13 @@
 
 import UIKit
 
-class StoryboardCell: CustomTableViewCell {
+class StoryboardCell: UITableViewCell, CustomTableViewCellProtocol {
     
     @IBOutlet weak var titleLabel: UILabel!
     
-    override var model: Any? {
-        didSet {
-            if let model = model as? TestCellModel {
-                self.titleLabel.text = model.titleText
-            }
+    func bindOriginalModel(model: Any) {
+        if let model = model as? TestCellModel {
+            self.titleLabel.text = model.titleText
         }
     }
     

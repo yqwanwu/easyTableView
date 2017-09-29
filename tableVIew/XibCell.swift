@@ -8,24 +8,12 @@
 
 import UIKit
 
-class XibCell: CustomTableViewCell {
+class XibCell: UITableViewCell, CustomTableViewCellProtocol {
     
     @IBOutlet weak var titleLabel: UILabel!
     
-//    override var model: Any? {
-//        didSet {
-//            if let model = model {
-//                
-//            }
-//        }
-//    }
-    
-    override var adapterModel: CustomTableViewCellItem? {
-        didSet {
-            if let model = adapterModel {
-                self.titleLabel.text = model.text
-            }
-        }
+    func bindAdapterModel(model: CustomTableViewCellItem) {
+        self.titleLabel.text = model.text
     }
 
     override func awakeFromNib() {
