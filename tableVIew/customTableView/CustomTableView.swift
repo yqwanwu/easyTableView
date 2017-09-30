@@ -100,13 +100,123 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
         return nil
     }
     
+    ///添加一个新的section数据源
+    /// - Parameters:
+    ///     - models: 源数据
+    ///     - cellClass: cell类型
+    ///     - section: section是位置，可以等于当前数组的count（此时插入到末尾） 不传参数默认添加走最后的一个secton
+    @discardableResult
+    func insertNewSectionCells<T: UITableViewCell>(models: [Any], cellClass: T.Type, section: Int? = nil) -> CustomTableViewCellItemArray {
+        let itemArr = CustomTableViewCellItemArray()
+        let group = section ?? self.dataArray.count
+        if group <= self.dataArray.count {
+            let arr = models.map({ CustomTableViewCellItem(cellClass: cellClass, originalModel: $0) })
+            itemArr.items = arr
+            self.dataArray.insert(arr, at: group)
+        }
+        return itemArr
+    }
+    
+    ///添加数据到某个section， 默认是最后一个section
+    /// - Parameters:
+    ///     - models: 源数据
+    ///     - cellClass: cell类型
+    ///     - indexPath: 插入数据不是添加，所以，section不可以越界，row可以等于当前section的rows数量。  不传参数默认添加到最后的一个secton的最后,
+    @discardableResult
+    func insertCells<T: UITableViewCell>(models: [Any], cellClass: T.Type, indexPath: IndexPath? = nil) -> CustomTableViewCellItemArray {
+        let itemArr = CustomTableViewCellItemArray()
+        let arr = models.map({ CustomTableViewCellItem(cellClass: cellClass, originalModel: $0) })
+        itemArr.items = arr
+        
+        if dataArray.isEmpty {
+            self.dataArray = [arr]
+            return itemArr
+        }
+        
+        if let idx = indexPath {
+            if idx.section < dataArray.count && idx.row <= dataArray[idx.section].count {
+                dataArray[idx.section].insert(contentsOf: arr, at: idx.row)
+            }
+        } else {
+            dataArray[dataArray.count - 1].append(contentsOf: arr)
+        }
+        
+        return itemArr
+    }
+    
+    ///用于中间过渡，处理cellitem
+    class CustomTableViewCellItemArray {
+        var items = [CustomTableViewCellItem]()
+        
+        typealias itemAction = (_ idx: IndexPath, _ model: Any) -> Void
+        
+        @discardableResult
+        func buildCellAction(_ cellAction: @escaping itemAction) -> Self {
+            for item in items {
+                item.setupCellAction({ (idx) in
+                    cellAction(idx, item.originalModel)
+                })
+            }
+            return self
+        }
+        
+        @discardableResult
+        func build(imageUrl _imageUrl: String?) -> Self {
+            for item in items {
+                item.imageUrl = _imageUrl
+            }
+            return self
+        }
+        
+        @discardableResult
+        func build(text _text: String?) -> Self {
+            for item in items {
+                item.text = _text
+            }
+            return self
+        }
+        
+        @discardableResult
+        func build(detailText _detailText: String?) -> Self {
+            for item in items {
+                item.detailText = _detailText
+            }
+            return self
+        }
+        
+        @discardableResult
+        func build(accessoryType _accessoryType: UITableViewCellAccessoryType) -> Self {
+            for item in items {
+                item.accessoryType = _accessoryType
+            }
+            return self
+        }
+        
+        ///如果设置了 cellClass 没有设置 cellIdentify， 则 identify 默认和cellClass同名
+        @discardableResult
+        func build(cellIdentify _cellIdentify: String?) -> Self {
+            for item in items {
+                item.cellIdentify = _cellIdentify
+            }
+            return self
+        }
+        
+        @discardableResult
+        func build(heightForRow height: CGFloat) -> Self {
+            for item in items {
+                item.heightForRow = height
+            }
+            return self
+        }
+    }
+    
     ///创建一个默认的cell，
     func createDefaultCell(indexPath: IndexPath) -> UITableViewCell {
         let data = dataArray[indexPath.section][indexPath.row]
         let identifier = data.cellIdentify ?? (NSStringFromClass(data.cellClass) as NSString).pathExtension
         
         let cell = self.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
-        if let cell = cell as? CustomTableViewCellProtocol {
+        if let cell = cell as? CustomTableViewCellDelegate {
             cell.bindAdapterModel(model: data)
             cell.bindOriginalModel(model: data.originalModel)
         }
@@ -231,11 +341,6 @@ extension CustomTableView {
 }
 
 
-///section 数据
-class CustomTableViewSectionItem: NSObject {
-    var cellItems = [CustomTableViewCellItem]()
-}
-
 ///数据源
 class CustomTableViewCellItem: NSObject {
     typealias cellSelectedAction = (_ idx: IndexPath) -> Void
@@ -260,7 +365,13 @@ class CustomTableViewCellItem: NSObject {
         self.cellAction = cellAction
     }
     
-    override init() {
+    convenience init(cellClass: AnyClass, originalModel: Any) {
+        self.init()
+        self.cellClass = cellClass
+        self.originalModel = originalModel
+    }
+    
+    private override init() {
         super.init()
     }
     
@@ -269,7 +380,7 @@ class CustomTableViewCellItem: NSObject {
         self.originalModel = _originalModel
         return self
     }
-
+    
     @discardableResult
     func build(imageUrl _imageUrl: String?) -> Self {
         self.imageUrl = _imageUrl
@@ -295,7 +406,7 @@ class CustomTableViewCellItem: NSObject {
     }
     
     @discardableResult
-    func build(cellClass _cellClass: AnyClass) -> Self {
+    func build<T: UITableViewCell>(cellClass _cellClass: T.Type) -> Self {
         self.cellClass = _cellClass
         return self
     }
@@ -316,7 +427,7 @@ class CustomTableViewCellItem: NSObject {
 
 
 /// cell 数据绑定协议
-protocol CustomTableViewCellProtocol {
+protocol CustomTableViewCellDelegate {
     ///绑定原始数据
     func bindOriginalModel(model: Any)
     
@@ -325,7 +436,7 @@ protocol CustomTableViewCellProtocol {
 }
 
 ///协议的默认实现
-extension CustomTableViewCellProtocol {
+extension CustomTableViewCellDelegate {
     func bindOriginalModel(model: Any) {  }
     
     func bindAdapterModel(model: CustomTableViewCellItem) {  }

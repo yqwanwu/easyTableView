@@ -8,7 +8,7 @@
 
 import UIKit
 
-class StoryboardCell: UITableViewCell, CustomTableViewCellProtocol {
+class StoryboardCell: UITableViewCell, CustomTableViewCellDelegate {
     
     @IBOutlet weak var titleLabel: UILabel!
     

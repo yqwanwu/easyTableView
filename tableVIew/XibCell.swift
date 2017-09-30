@@ -8,7 +8,7 @@
 
 import UIKit
 
-class XibCell: UITableViewCell, CustomTableViewCellProtocol {
+class XibCell: UITableViewCell, CustomTableViewCellDelegate {
     
     @IBOutlet weak var titleLabel: UILabel!
     
