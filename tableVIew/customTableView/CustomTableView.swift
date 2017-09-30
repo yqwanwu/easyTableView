@@ -122,7 +122,6 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     //代理类
     private class _CustomTableViewDataSource: CommonProxy, UITableViewDataSource {
         weak var obj: CustomTableView!
-        fileprivate var registeredCells = [String: AnyClass]()
         
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             return obj.tableView(tableView, numberOfRowsInSection: section)
@@ -132,18 +131,12 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
             let data = obj.dataArray[indexPath.section][indexPath.row]
             let identifier = data.cellIdentify ?? (NSStringFromClass(data.cellClass) as NSString).pathExtension
             
-            if obj.dequeueReusableCell(withIdentifier: identifier) == nil && registeredCells[identifier] == nil {
-                if let id = data.cellIdentify {
-                    if Bundle.main.path(forResource: id, ofType: "nib") != nil {
-                        let nib = UINib(nibName: id, bundle: Bundle.main)
-                        obj.register(nib, forCellReuseIdentifier: id)
-                    } else {
-                        obj.register(data.cellClass, forCellReuseIdentifier: id)
-                    }
-                    registeredCells[id] = data.cellClass
+            if obj.dequeueReusableCell(withIdentifier: identifier) == nil {
+                if Bundle.main.path(forResource: identifier, ofType: "nib") != nil {
+                    let nib = UINib(nibName: identifier, bundle: Bundle.main)
+                    obj.register(nib, forCellReuseIdentifier: identifier)
                 } else {
-                    obj.register(clazz: data.cellClass)
-                    registeredCells[identifier] = data.cellClass
+                    obj.register(data.cellClass, forCellReuseIdentifier: identifier)
                 }
             }
             return obj.tableView(tableView, cellForRowAt: indexPath)

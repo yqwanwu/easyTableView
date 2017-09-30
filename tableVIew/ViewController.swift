@@ -32,7 +32,7 @@ class ViewController: UIViewController, UITableViewDelegate {
         }
         
         //类型3：cell的名字和identitify不一致
-        //随便指定一个class。懒得写了
+        //随便指定一个class。懒得写了, 如果没在storybord中注册也会自动注册
         let thirdModel = CustomTableViewCellItem().build(cellClass: UITableViewCell.self).build(cellIdentify: "cell").build(heightForRow: 100)
         
         //MARK: 添加数据
