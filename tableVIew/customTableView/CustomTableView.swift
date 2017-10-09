@@ -238,15 +238,17 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
         }
         
         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let data = obj.dataArray[indexPath.section][indexPath.row]
-            let identifier = data.cellIdentify ?? (NSStringFromClass(data.cellClass) as NSString).pathExtension
-            
-            if obj.dequeueReusableCell(withIdentifier: identifier) == nil {
-                if Bundle.main.path(forResource: identifier, ofType: "nib") != nil {
-                    let nib = UINib(nibName: identifier, bundle: Bundle.main)
-                    obj.register(nib, forCellReuseIdentifier: identifier)
-                } else {
-                    obj.register(data.cellClass, forCellReuseIdentifier: identifier)
+            if indexPath.section < obj.dataArray.count && indexPath.row < obj.dataArray[indexPath.section].count {
+                let data = obj.dataArray[indexPath.section][indexPath.row]
+                let identifier = (NSStringFromClass(data.cellClass) as NSString).pathExtension
+                
+                if obj.dequeueReusableCell(withIdentifier: identifier) == nil {
+                    if Bundle.main.path(forResource: identifier, ofType: "nib") != nil {
+                        let nib = UINib(nibName: identifier, bundle: Bundle.main)
+                        obj.register(nib, forCellReuseIdentifier: identifier)
+                    } else {
+                        obj.register(data.cellClass, forCellReuseIdentifier: identifier)
+                    }
                 }
             }
             return obj.tableView(tableView, cellForRowAt: indexPath)
