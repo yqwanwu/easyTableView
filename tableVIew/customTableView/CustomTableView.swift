@@ -212,6 +212,9 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     
     ///创建一个默认的cell，
     func createDefaultCell(indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.section >= dataArray.count || indexPath.row >= dataArray[indexPath.section].count {
+            return CustomTableView.PLACEHODEL_CELL
+        }
         let data = dataArray[indexPath.section][indexPath.row]
         let identifier = data.cellIdentify ?? (NSStringFromClass(data.cellClass) as NSString).pathExtension
         
