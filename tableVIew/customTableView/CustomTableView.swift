@@ -305,7 +305,7 @@ extension CustomTableView {
                 return number
             }
         }
-        return dataArray.count == 0 ? 1 : dataArray.count
+        return dataArray.count
     }
     
     ///delegate
