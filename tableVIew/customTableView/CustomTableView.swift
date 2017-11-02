@@ -245,7 +245,7 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
                 let data = obj.dataArray[indexPath.section][indexPath.row]
                 let identifier = (NSStringFromClass(data.cellClass) as NSString).pathExtension
                 
-                if obj.dequeueReusableCell(withIdentifier: identifier) == nil {
+                if identifier != "" && obj.dequeueReusableCell(withIdentifier: identifier) == nil {
                     if Bundle.main.path(forResource: identifier, ofType: "nib") != nil {
                         let nib = UINib(nibName: identifier, bundle: Bundle.main)
                         obj.register(nib, forCellReuseIdentifier: identifier)
@@ -292,7 +292,7 @@ extension CustomTableView {
                 return number
             }
         }
-        return dataArray.count
+        return dataArray.count == 0 ? 1 : dataArray.count
     }
     
     ///delegate
