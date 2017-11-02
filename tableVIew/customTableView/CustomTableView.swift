@@ -144,6 +144,19 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
         return itemArr
     }
     
+    ///数据移除
+    func removeData(indexPath: IndexPath) {
+        if dataArray[indexPath.section].count == 1 {
+            dataArray.remove(at: indexPath.section)
+        } else {
+            dataArray[indexPath.section].remove(at: indexPath.row)
+        }
+    }
+    
+    func removeData(section: Int) {
+        dataArray.remove(at: section)
+    }
+    
     ///用于中间过渡，处理cellitem
     class CustomTableViewCellItemArray {
         var items = [CustomTableViewCellItem]()
