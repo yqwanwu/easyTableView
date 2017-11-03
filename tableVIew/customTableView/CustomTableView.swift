@@ -20,7 +20,18 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     //占位 如果返回这个cell。tableview自动处理cell
     static let PLACEHODEL_CELL = UITableViewCell()
     
-    var dataArray: [[CustomTableViewCellItem]] = [[CustomTableViewCellItem]]()
+    var dataArray: [[CustomTableViewCellItem]] = [[CustomTableViewCellItem]()]
+    
+    var isEmpty: Bool {
+        if !dataArray.isEmpty {
+            for arr in dataArray {
+                if !arr.isEmpty {
+                    return false
+                }
+            }
+        }
+        return true
+    }
     
     override var dataSource: UITableViewDataSource? {
         didSet {
