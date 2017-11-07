@@ -394,10 +394,12 @@ class CustomTableViewCellItem: NSObject {
         self.cellAction = cellAction
     }
     
-    convenience init(cellClass: AnyClass, originalModel: Any) {
+    convenience init(cellClass: AnyClass, originalModel: Any? = nil) {
         self.init()
         self.cellClass = cellClass
-        self.originalModel = originalModel
+        if let obj = originalModel {
+            self.originalModel = obj
+        }
     }
     
     private override init() {

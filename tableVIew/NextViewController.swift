@@ -8,6 +8,13 @@
 
 import UIKit
 
+class Test: UIViewController {
+    
+    deinit {
+        print("test 销毁")
+    }
+}
+
 class NextViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var tableView: CustomTableView!
@@ -20,7 +27,9 @@ class NextViewController: UIViewController, UITableViewDelegate, UITableViewData
         tableView.delegate = self
 
         let xibModel = CustomTableViewCellItem(cellClass: XibCell.self, originalModel: NSObject()).build(text: "xib....").build(heightForRow: 100)
-        xibModel.cellAction = { (idx) in
+        xibModel.cellAction = { [unowned self] (idx) in
+            let t = Test()
+            self.navigationController?.pushViewController(t, animated: true)
             print(idx.row)
         }
 
@@ -38,8 +47,6 @@ extension NextViewController {
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        /*若返回 CustomTableViewCell.placeholderCell(), 自动生成 cell*/
-//        return CustomTableViewCell.placeholderCell()
         
 //        let cell = tableView.dequeueReusableCell(withIdentifier: "XibCell", for: indexPath) as! XibCell
 //        cell.bindAdapterModel(model: self.tableView.dataArray[indexPath.section][indexPath.row])

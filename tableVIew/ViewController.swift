@@ -29,14 +29,14 @@ class ViewController: UIViewController, UITableViewDelegate {
         
         //类型2：xib中的cell
         
-        let xibModel = CustomTableViewCellItem(cellClass: XibCell.self, originalModel: NSObject()).build(text: "xib....")
-        xibModel.cellAction = { indexPath in
-            print(indexPath.row)
-        }
+//        let xibModel = CustomTableViewCellItem(cellClass: XibCell.self, originalModel: NSObject()).build(text: "xib....")
+//        xibModel.cellAction = { indexPath in
+//            print(indexPath.row)
+//        }
         
         //类型3：cell的名字和identitify不一致
         //随便指定一个class。懒得写了, 如果没在storybord中注册也会自动注册
-        let thirdModel = CustomTableViewCellItem(cellClass: UITableViewCell.self, originalModel: NSObject()).build(cellIdentify: "cell").build(heightForRow: 100)
+//        let thirdModel = CustomTableViewCellItem(cellClass: UITableViewCell.self, originalModel: NSObject()).build(cellIdentify: "cell").build(heightForRow: 100)
         
         //MARK: 添加数据
 //        tableView.dataArray = [[cellItem], [thirdModel]]
