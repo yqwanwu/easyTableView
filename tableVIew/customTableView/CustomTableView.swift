@@ -235,7 +235,7 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     }
     
     ///创建一个默认的cell，
-    func createDefaultCell(indexPath: IndexPath) -> UITableViewCell {
+    func createDefaultCell(indexPath: IndexPath, config: ((UITableViewCell) -> Void)? = nil) -> UITableViewCell {
         if indexPath.section >= dataArray.count || indexPath.row >= dataArray[indexPath.section].count {
             return CustomTableView.PLACEHODEL_CELL
         }
@@ -243,6 +243,9 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
         let identifier = data.cellIdentify ?? (NSStringFromClass(data.cellClass) as NSString).pathExtension
         
         let cell = self.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
+        
+        config?(cell)
+        
         if let cell = cell as? CustomTableViewCellDelegate {
             cell.bindAdapterModel(model: data)
             cell.bindOriginalModel(model: data.originalModel)
