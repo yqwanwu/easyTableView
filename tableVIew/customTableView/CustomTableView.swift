@@ -17,6 +17,8 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     //防止已经销毁还在使用weak属性
     private var destroyed = false
     
+    fileprivate var _registeredCells = Set<String>()
+    
     //占位 如果返回这个cell。tableview自动处理cell
     static let PLACEHODEL_CELL = UITableViewCell()
     
@@ -272,7 +274,7 @@ class CustomTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
                 let data = obj.dataArray[indexPath.section][indexPath.row]
                 let identifier = (NSStringFromClass(data.cellClass) as NSString).pathExtension
                 
-                if identifier != "" && obj.dequeueReusableCell(withIdentifier: identifier) == nil {
+                if identifier != "" && !obj._registeredCells.contains(identifier) {
                     if Bundle.main.path(forResource: identifier, ofType: "nib") != nil {
                         let nib = UINib(nibName: identifier, bundle: Bundle.main)
                         obj.register(nib, forCellReuseIdentifier: identifier)
@@ -314,6 +316,18 @@ extension CustomTableView {
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
+        //注册
+        if let cells = tableView.value(forKey: "_cellClassDict") as? NSDictionary {
+            cells.allKeys.forEach({ (k) in
+                _registeredCells.insert(k as! String)
+            })
+        }
+        if let cells = tableView.value(forKey: "_nibMap") as? NSDictionary {
+            cells.allKeys.forEach({ (k) in
+                _registeredCells.insert(k as! String)
+            })
+        }
+        
         if let od = originalDataSouce, !od.isEqual(self) {
             if let number = od.numberOfSections?(in: tableView) {
                 return number
